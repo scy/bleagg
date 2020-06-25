@@ -9,7 +9,7 @@ Also, currently you’ll have to install requirements manually.
 
 Oh, and my sensors are hard-coded.
 I’m sorry, this project is not perfectly polished, but I’m publishing it nevertheless, maybe somebody finds it useful.
-Also, I have a backup on GitHub now. 
+Also, I have a backup on GitHub now.
 
 “Unstable” means:
 Either I’m using the [Bleak](https://github.com/hbldh/bleak) library wrong, or the Raspberry Pi the code is running on has problems with its Bluetooth stack.

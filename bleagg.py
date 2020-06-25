@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 from bleak import BleakClient
+from random import shuffle
 import re
 import signal
 import sys
@@ -69,6 +70,7 @@ if __name__ == "__main__":
     signal.signal(signal.SIGALRM, lambda sig, stk: sys.exit(2))
 
     while True:
+        shuffle(sensors)
         for sensor in sensors:
             # Give each sonsor 30s do complete, or quit.
             signal.alarm(30)

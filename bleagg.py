@@ -76,8 +76,8 @@ if __name__ == "__main__":
             signal.alarm(30)
             try:
                 loop.run_until_complete(sensor.query_once())
-            except:
-                print(sensor.name, "oopsed")
+            except Exception as e:
+                print(sensor.name, "oopsed:", str(e))
         
         lines = []
         for sensor in sensors:

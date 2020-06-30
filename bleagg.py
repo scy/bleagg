@@ -6,6 +6,7 @@ import re
 import signal
 import sys
 import time
+import traceback
 from urllib import request
 
 sensors = {
@@ -57,6 +58,11 @@ class Sensor:
             self.hum = float(match.group("H"))
         self.msg(self.temp, self.hum)
 
+def timeout_quit(sig, frame):
+    print("### watchdog timeout, exiting ###")
+    traceback.print_stack(frame)
+    sys.exit(2)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--feed-id", "-f", type=str, required=True)
@@ -67,7 +73,9 @@ if __name__ == "__main__":
     sensors = [Sensor(addr, name, loop) for (addr, name) in sensors.items()]
 
     # Exit on SIGALARM. This is our watchdog against hanging.
-    signal.signal(signal.SIGALRM, lambda sig, stk: sys.exit(2))
+    signal.signal(signal.SIGALRM, timeout_quit)
+
+    print("### bleagg starting ###")
 
     while True:
         shuffle(sensors)

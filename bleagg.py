@@ -15,6 +15,11 @@ sensors = {
     "4C:65:A8:DC:1B:6A": "desk",
     "4C:65:A8:DC:1C:2C": "bathroom",
     "4C:65:A8:DC:30:A6": "bed",
+    "58:2D:34:3B:24:21": "kitchen_lower_storage",
+    "58:2D:34:3B:24:29": "cockpit_storage",
+    "58:2D:34:3B:25:53": "heater_valve",
+    "58:2D:34:3B:27:9C": "water_tank",
+    "58:2D:34:3B:28:8E": "fridge",
 }
 uuid = "226caa55-6476-4566-7562-66734470666d"
 

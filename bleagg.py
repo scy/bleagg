@@ -66,9 +66,29 @@ class Sensor:
             if timestamp_file is not None:
                 timestamp_file.touch()
 
+# This should not be a global function that has to access `args` (only availble if __name__ == "__main__"), but here we are.
+def send_data():
+    lines = []
+    for sensor in sensors:
+        if sensor.temp:
+            lines.append("{0},{1}_{2},{3}".format(sensor.epoch, sensor.name, "temperature_c", sensor.temp))
+        if sensor.hum:
+            lines.append("{0},{1}_{2},{3}".format(sensor.epoch, sensor.name, "humidity_percent", sensor.hum))
+    if len(lines) < 1:
+        return
+    lines = "\n".join(lines)
+    req = request.Request(
+        "https://iotplotter.com/api/v2/feed/{0}.csv".format(args.feed_id),
+        data=lines.encode(),
+        headers={"api-key": args.key}
+    )
+    print(lines)
+    request.urlopen(req).read()
+
 def timeout_quit(sig, frame):
     print("### watchdog timeout, exiting ###")
     traceback.print_stack(frame)
+    send_data()
     sys.exit(2)
 
 if __name__ == "__main__":
@@ -100,21 +120,10 @@ if __name__ == "__main__":
 
         if max([sensor.epoch or 0 for sensor in sensors]) < (time.time() - 600):
             print("### no update since 10 minutes, exiting ###")
+            send_data()
             sys.exit(3)
+
+        send_data()
         
-        lines = []
-        for sensor in sensors:
-            if sensor.temp:
-                lines.append("{0},{1}_{2},{3}".format(sensor.epoch, sensor.name, "temperature_c", sensor.temp))
-            if sensor.hum:
-                lines.append("{0},{1}_{2},{3}".format(sensor.epoch, sensor.name, "humidity_percent", sensor.hum))
-        lines = "\n".join(lines)
-        req = request.Request(
-            "https://iotplotter.com/api/v2/feed/{0}.csv".format(args.feed_id),
-            data=lines.encode(),
-            headers={"api-key": args.key}
-        )
-        print(lines)
-        request.urlopen(req).read()
         signal.alarm(60)
         time.sleep(30)

@@ -90,6 +90,7 @@ def send_data():
     )
     print(lines)
     request.urlopen(req).read()
+    print("sent.")
 
 def timeout_quit(sig, frame):
     print("### watchdog timeout, exiting ###")

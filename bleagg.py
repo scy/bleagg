@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 from bleak import BleakClient
+from pathlib import Path
 from random import shuffle
 import re
 import signal
@@ -61,7 +62,9 @@ class Sensor:
             self.epoch = int(time.time())
             self.temp = float(match.group("T"))
             self.hum = float(match.group("H"))
-        self.msg(self.temp, self.hum)
+            self.msg(self.temp, self.hum)
+            if timestamp_file is not None:
+                timestamp_file.touch()
 
 def timeout_quit(sig, frame):
     print("### watchdog timeout, exiting ###")
@@ -72,7 +75,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--feed-id", "-f", type=str, required=True)
     parser.add_argument("--key", "-k", type=str, required=True)
+    parser.add_argument("--timestamp-file", "-t", type=str, required=False)
     args = parser.parse_args()
+
+    timestamp_file = Path(args.timestamp_file) if args.timestamp_file else None
 
     loop = asyncio.get_event_loop()
     sensors = [Sensor(addr, name, loop) for (addr, name) in sensors.items()]

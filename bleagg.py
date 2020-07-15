@@ -37,6 +37,11 @@ class Sensor:
     def msg(self, *msg):
         print(self.name, *msg)
 
+    def clear(self):
+        self.epoch = None
+        self.temp = None
+        self.hum = None
+
     async def query_once(self):
         self.msg("query_once")
         async with BleakClient(self.addr, loop=self.loop) as client:
@@ -74,6 +79,7 @@ def send_data():
             lines.append("{0},{1}_{2},{3}".format(sensor.epoch, sensor.name, "temperature_c", sensor.temp))
         if sensor.hum:
             lines.append("{0},{1}_{2},{3}".format(sensor.epoch, sensor.name, "humidity_percent", sensor.hum))
+        sensor.clear()
     if len(lines) < 1:
         return
     lines = "\n".join(lines)

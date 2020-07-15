@@ -97,6 +97,10 @@ if __name__ == "__main__":
                 loop.run_until_complete(sensor.query_once())
             except Exception as e:
                 print(sensor.name, "oopsed:", str(e))
+
+        if max([sensor.epoch or 0 for sensor in sensors]) < (time.time() - 600):
+            print("### no update since 10 minutes, exiting ###")
+            sys.exit(3)
         
         lines = []
         for sensor in sensors:
